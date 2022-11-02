@@ -6,8 +6,10 @@ import {
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
 
-import { SignIn } from "./src/screens/SignIn";
-import { Loading } from "./src/components/loading";
+import { AurhContextProvider } from "./src/contexts/AuthContext";
+
+import { Pools } from "./src/screens/Pools";
+import { Loading } from "./src/components/Loading";
 
 import { THEME } from "./src/styles/theme";
 
@@ -20,12 +22,14 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={THEME}>
-      <StatusBar
-        barStyle='light-content'
-        backgroundColor='trasparent'
-        translucent
-      />
-      {fontsLoaded ? <SignIn /> : <Loading />}
+      <AurhContextProvider>
+        <StatusBar
+          barStyle='light-content'
+          backgroundColor='transparent'
+          translucent
+        />
+        {fontsLoaded ? <Pools /> : <Loading />}
+      </AurhContextProvider>
     </NativeBaseProvider>
   );
 }
