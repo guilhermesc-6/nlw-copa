@@ -5,6 +5,7 @@ import { api } from "../services/api";
 
 import { Game, GameProps } from "./Game";
 import { EmptyMyPoolList } from "./EmptyMyPoolList";
+import { Loading } from "./Loading";
 
 interface Props {
   poolId: string;
@@ -13,6 +14,7 @@ interface Props {
 
 export function Guesses({ poolId, code }: Props) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isGuessLoading, setIsGuessLoading] = useState(false);
   const [games, setGames] = useState<GameProps[]>([]);
   const [firstTeamPoints, setFirstTeamPoints] = useState("");
   const [secondTeamPoints, setSecondTeamPoints] = useState("");
@@ -47,6 +49,7 @@ export function Guesses({ poolId, code }: Props) {
           bgColor: "red.500",
         });
       }
+      setIsGuessLoading(true);
 
       await api.post(`/pools/${poolId}/games/${gameId}/guesses`, {
         firstTeamPoints: Number(firstTeamPoints),
@@ -68,12 +71,18 @@ export function Guesses({ poolId, code }: Props) {
         placement: "top",
         bgColor: "red.500",
       });
+    } finally {
+      setIsGuessLoading(false);
     }
   }
 
   useEffect(() => {
     fetchGames();
   }, [poolId]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <FlatList
@@ -85,8 +94,11 @@ export function Guesses({ poolId, code }: Props) {
           setFirstTeamPoints={setFirstTeamPoints}
           setSecondTeamPoints={setSecondTeamPoints}
           onGuessConfirm={() => handleGuessConfirm(item.id)}
+          isGuessLoading={isGuessLoading}
         />
       )}
+      mb={50}
+      showsVerticalScrollIndicator={false}
       _contentContainerStyle={{ pb: 10 }}
       ListEmptyComponent={() => <EmptyMyPoolList code={code} />}
     />

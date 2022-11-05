@@ -28,6 +28,7 @@ interface Props {
   onGuessConfirm: () => void;
   setFirstTeamPoints: (value: string) => void;
   setSecondTeamPoints: (value: string) => void;
+  isGuessLoading: boolean;
 }
 
 export function Game({
@@ -35,6 +36,7 @@ export function Game({
   setFirstTeamPoints,
   setSecondTeamPoints,
   onGuessConfirm,
+  isGuessLoading,
 }: Props) {
   const { colors, sizes } = useTheme();
 
@@ -66,6 +68,8 @@ export function Game({
           code={data.firstTeamCountryCode}
           position='right'
           onChangeText={setFirstTeamPoints}
+          guess={String(data.guess?.firstTeamPoints)}
+          points={data.guess && String(data.guess?.firstTeamPoints)}
         />
 
         <X color={colors.gray[300]} size={sizes[6]} />
@@ -74,11 +78,20 @@ export function Game({
           code={data.secondTeamContryCode}
           position='left'
           onChangeText={setSecondTeamPoints}
+          guess={String(data.guess?.secondTeamPoints)}
+          points={data.guess && String(data.guess?.secondTeamPoints)}
         />
       </HStack>
 
       {!data.guess && (
-        <Button size='xs' w='full' bgColor='green.500' mt={4} onPress={onGuessConfirm}>
+        <Button
+          size='xs'
+          w='full'
+          bgColor='green.500'
+          mt={4}
+          onPress={onGuessConfirm}
+          isLoading={isGuessLoading}
+        >
           <HStack alignItems='center'>
             <Text color='white' fontSize='xs' fontFamily='heading' mr={3}>
               CONFIRMAR PALPITE
